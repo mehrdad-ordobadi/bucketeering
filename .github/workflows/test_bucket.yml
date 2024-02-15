@@ -8,7 +8,13 @@ jobs:
         steps:
             - name: checkout
               uses: actions/checkout@v2
-            
+
+            - name: auth-in-aws
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                aws-region: us-east-1
+                role-to-assume: arn:aws:iam::746706907394:role/github-admin
+
             - name: create backend
               run: |
                 BUCKET_NAME="ephemeral-dev-environment-tfstate-bucket"
@@ -16,21 +22,21 @@ jobs:
                 TABLE_NAME="home-service-v2-terraform-lock"
 
                 # check if the bucket exists and create it if it doesn't
-                if aws s3api --profile personal-aws head-bucket --bucket "$BUCKET_NAME" 2>/dev/null; then
+                if aws s3api head-bucket --bucket "$BUCKET_NAME" 2>/dev/null; then
                     echo "Bucket $BUCKET_NAME already exists."
                 else
                     echo "Bucket $BUCKET_NAME does not exist. Creating..."
-                    aws s3api --profile personal-aws create-bucket --bucket "$BUCKET_NAME" --region "$REGION"
-                    aws s3api --profile personal-aws put-bucket-encryption --bucket "$BUCKET_NAME" --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
+                    aws s3api create-bucket --bucket "$BUCKET_NAME" --region "$REGION"
+                    aws s3api put-bucket-encryption --bucket "$BUCKET_NAME" --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
                     echo "Bucket $BUCKET_NAME created and encryption enabled."
                 fi
 
                 # Check if the DynamoDB table exists
-                if aws dynamodb  --profile personal-aws describe-table --table-name "$TABLE_NAME" --query "Table.TableStatus" --output text 2>/dev/null; then
+                if aws dynamodb describe-table --table-name "$TABLE_NAME" --query "Table.TableStatus" --output text 2>/dev/null; then
                     echo "Table $TABLE_NAME already exists."
                 else
                     echo "Table $TABLE_NAME does not exist. Creating..."
-                    aws dynamodb --profile personal-aws create-table \
+                    aws dynamodb create-table \
                         --table-name "$TABLE_NAME" \
                         --attribute-definitions AttributeName=LockID,AttributeType=S \
                         --key-schema AttributeName=LockID,KeyType=HASH \
