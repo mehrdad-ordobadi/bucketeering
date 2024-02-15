@@ -1,6 +1,9 @@
 name: Testing bucket directories
 on:
     push:
+permissions:
+    id-token: write
+    contents: read
 
 jobs:
     create_backend-and-state:
