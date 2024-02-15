@@ -50,7 +50,7 @@ jobs:
             
             - name: terraform plan
               run: |
-                STATE_PATH=$GITHUB_REF_NAME
+                STATE_PATH=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)/$GITHUB_REF_NAME
                 terraform init -backend-config="key=$STATE_PATH/terraform.tfstate"   || { echo "Failed to initialize Terraform configuration"; exit 1; }
                 terraform plan -var="environment_name=$GITHUB_REF_NAME"
                 terraform apply -var="environment_name=$GITHUB_REF_NAME" --auto-approve
