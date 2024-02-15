@@ -22,7 +22,7 @@ jobs:
               run: |
                 BUCKET_NAME="ephemeral-dev-environment-tfstate-bucket"
                 REGION="us-east-1"
-                TABLE_NAME="home-service-v2-terraform-lock"
+                TABLE_NAME="ephemeral-dev-environment-tfstate-lock-table"
 
                 # check if the bucket exists and create it if it doesn't
                 if aws s3api head-bucket --bucket "$BUCKET_NAME" 2>/dev/null; then

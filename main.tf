@@ -1,6 +1,5 @@
 provider "aws" {
   region = "us-east-1"  # Replace with your preferred AWS region
-  profile = "personal-aws" # replace with your AWS CLI profile`
 }
 
 variable "environment_name" {
@@ -125,9 +124,9 @@ resource "aws_eip" "coderunner_eip" {
 }
  terraform {
   backend "s3" {
-    bucket         = "testing-bucket"  # Replace with your bucket name
+    bucket         = "ephemeral-dev-environment-tfstate-bucket"  # Replace with your bucket name
     region         = "us-east-1"                  # Replace with your bucket region
-    dynamodb_table = "testing-lock-table"              # Replace with your DynamoDB table name
+    dynamodb_table = "ephemeral-dev-environment-tfstate-lock-table"              # Replace with your DynamoDB table name
     encrypt        = true
   }
    
