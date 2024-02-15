@@ -53,75 +53,8 @@ resource "aws_route_table_association" "cr_a" {
   route_table_id = aws_route_table.cr_rt1.id
 }
 
-# Create a security group
-resource "aws_security_group" "cr_allow_web" {
-  name = "allow_web_traffic"
-  description = "Allow web inbound traffic"
-  vpc_id = aws_vpc.coderunner_vpc.id
 
-  ingress {
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # allow http from everywhere
-  }
 
-  ingress {
-    from_port = 443
-    to_port = 443
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # allow https from everywhere
-  }
-
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # allow ssh from everywhere
-  }
-
-  egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"] # allow all outbound traffic to everywhere
-  }
-  tags = {
-    Name = "cr_a"
-  }
-  
-}
-
-# "Import" the key pair you created separately
-# resource "aws_key_pair" "coderunner_key" {
-#   key_name = "coderunner"
-#   public_key = file("${path.module}/coderunner.pub") # replace it with your path and keyname 
-# }
-
-# Create the EC2 server
-resource "aws_instance" "coderunner_ubuntu" {
-    ami = "ami-0fc5d935ebf8bc3bc" # Ubuntu 64-bit
-    instance_type = "t2.micro" # need enough memory for pytorch and the ML model
-    subnet_id = aws_subnet.cr_subnet.id
-    vpc_security_group_ids = [aws_security_group.cr_allow_web.id]
-    # key_name =  aws_key_pair.coderunner_key.key_name
-
-     # Specify the size of the root EBS volume
-       root_block_device {
-        volume_type = "gp2" # General purpose SSD
-        volume_size = 20 # Size in GB
-    }
-
-    tags = {
-      Name = "${var.environment_name}"
-    }
-}
-
-# Resource for Elastic IP
-resource "aws_eip" "coderunner_eip" {
-  instance = aws_instance.coderunner_ubuntu.id
-  # vpc = true
-}
  terraform {
   backend "s3" {
     bucket         = "ephemeral-dev-environment-tfstate-bucket"  # Replace with your bucket name
