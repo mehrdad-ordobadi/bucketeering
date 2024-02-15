@@ -67,7 +67,7 @@ resource "aws_route_table_association" "cr_a" {
 
 
 
-# Associate the elastic IP with your EC2 public IP address
-output "public_ip" {
-  value = aws_eip.coderunner_eip.public_ip
-}
+# # Associate the elastic IP with your EC2 public IP address
+# output "public_ip" {
+#   value = aws_eip.coderunner_eip.public_ip
+# }
