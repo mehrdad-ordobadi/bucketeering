@@ -7,11 +7,6 @@ variable "environment_name" {
   type        = string
 }
 
-variable "backed_key" {
-  description = "s3-table key name"
-  type        = string
-}
-
 # Create your VPC
 resource "aws_vpc" "coderunner_vpc" {
   cidr_block =  "10.0.0.0/16" # CIDR block for the VPC
@@ -19,6 +14,15 @@ resource "aws_vpc" "coderunner_vpc" {
     Name = "${var.environment_name}" # Name of your VPC
   }
 }   
+ terraform {
+  backend "s3" {
+    bucket         = "ephemeral-dev-environment-tfstate-bucket"  # Replace with your bucket name
+    region         = "us-east-1"                  # Replace with your bucket region
+    dynamodb_table = "ephemeral-dev-environment-tfstate-lock-table"              # Replace with your DynamoDB table name
+    encrypt        = true
+  }
+   
+ }
 
 # # Create a internet gateway
 # resource "aws_internet_gateway" "cr_igw" {
@@ -60,16 +64,6 @@ resource "aws_vpc" "coderunner_vpc" {
 
 
 
- terraform {
-  backend "s3" {
-    bucket         = "ephemeral-dev-environment-tfstate-bucket"  # Replace with your bucket name
-    region         = "us-east-1"                  # Replace with your bucket region
-    key            = var.backed_key
-    dynamodb_table = "ephemeral-dev-environment-tfstate-lock-table"              # Replace with your DynamoDB table name
-    encrypt        = true
-  }
-   
- }
 
 
 

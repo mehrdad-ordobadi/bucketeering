@@ -50,10 +50,9 @@ jobs:
             
             - name: terraform plan
               run: |
-                STATE_PATH=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)/$GITHUB_REF_NAME
-                export TF_VAR_backend_key=$STATE_PATH/terraform.tfstate
+                STATE_PATH=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)/$GITHUB_REF_NAME/terraform.tfstate
                 export TF_VAR_environment_name=$GITHUB_REF_NAME
-                terraform init 
+                terraform init -backend-config="key=${STATE_PATH}"
                 terraform plan 
                 terraform apply --auto-approve
             
