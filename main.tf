@@ -16,9 +16,10 @@ resource "aws_vpc" "coderunner_vpc" {
 }   
  terraform {
   backend "s3" {
-    bucket         = "ephemeral-dev-environment-tfstate-bucket"  # Replace with your bucket name
-    region         = "us-east-1"                  # Replace with your bucket region
-    dynamodb_table = "ephemeral-dev-environment-tfstate-lock-table"              # Replace with your DynamoDB table name
+    bucket         = "<BUCKET_NAME>"  # Replace with your bucket name
+    region         = "<AWS_REGION>"                  # Replace with your bucket region
+    dynamodb_table = "<TABLE_NAME>"              # Replace with your DynamoDB table name
+    key            = "<STATE_PATH>" # Replace with your state file name
     encrypt        = true
   }
    
