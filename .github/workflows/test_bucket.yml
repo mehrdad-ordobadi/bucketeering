@@ -42,7 +42,7 @@ jobs:
                 fi
 
                 # Check if the DynamoDB table exists
-                TABLE_EXISTS=$(aws dynamodb describe-table --table-name "$TABLE_NAME" --query "Table.TableStatus" --output text 2>/dev/null)
+                TABLE_EXISTS=$(aws dynamodb describe-table --table-name "$TABLE_NAME" --query "Table.TableStatus" --output text 2>/dev/null || true)
                 if [ -z "$TABLE_EXISTS" ]; then
                     echo "Table $TABLE_NAME already exists."
                 else
