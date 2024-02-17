@@ -32,7 +32,6 @@ jobs:
                 echo "Table name: ${TABLE_NAME}" >> GITHUB_ENV
                 # check if the bucket exists and create it if it doesn't
                 BUCKET_EXISTS=$(aws s3api head-bucket --bucket ${BUCKET_NAME} 2>&1 || true)
-                echo "Bucket exists: ${BUCKET_EXISTS}"
                 if [ -z "$BUCKET_EXISTS" ]; then
                     echo "Bucket $BUCKET_NAME already exists."
                 else
@@ -43,9 +42,7 @@ jobs:
                 fi
 
                 # Check if the DynamoDB table exists
-                TABLE_EXISTS=$(aws dynamodb describe-table --table-name "$TABLE_NAME" --query "Table.TableStatus" --output text 2>/dev/null || true)
-                echo "Table exists: ${TABLE_EXISTS}"
-                if [ -z "$TABLE_EXISTS" ]; then
+                if aws dynamodb describe-table --table-name "$TABLE_NAME" --query "Table.TableStatus" --output text 2>/dev/null; then
                     echo "Table $TABLE_NAME already exists."
                 else
                     echo "Table $TABLE_NAME does not exist. Creating..."
@@ -63,9 +60,9 @@ jobs:
                 STATE_PATH=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)/$GITHUB_REF_NAME/terraform.tfstate
                 export TF_VAR_environment_name=$GITHUB_REF_NAME
                 sed -i "s@<STATE_PATH>@${STATE_PATH}@g" main.tf
-                sed -i "s@<BUCKET_NAME>@${BUCKET_NAME}@g" main.tf
-                sed -i "s@<REGION>@${REGION}@g" main.tf
-                sed -i "s@<TABLE_NAME>@${TABLE_NAME}@g" main.tf
+                sed -i "s@<BUCKET_NAME>@${{env.BUCKET_NAME}}@g" main.tf
+                sed -i "s@<REGION>@${{env.REGION}}@g" main.tf
+                sed -i "s@<TABLE_NAME>@${{env.TABLE_NAME}}@g" main.tf
                 terraform init 
                 terraform plan 
                 terraform apply --auto-approve
