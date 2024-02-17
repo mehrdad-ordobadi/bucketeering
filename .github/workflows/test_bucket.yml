@@ -28,9 +28,9 @@ jobs:
                 REGION="us-east-1"
                 TABLE_NAME=${BUCKET_NAME:0:58}_lock
 
-                echo "Region=${REGION}" >> $GITHUB_ENV
-                echo "Bucket name=${BUCKET_NAME}" >> $GITHUB_ENV
-                echo "Table name=${TABLE_NAME}" >> $GITHUB_ENV
+                echo "REGION=${REGION}" >> $GITHUB_ENV
+                echo "BUCKET_NAME=${BUCKET_NAME}" >> $GITHUB_ENV
+                echo "TABLE_NAME=${TABLE_NAME}" >> $GITHUB_ENV
 
                 # check if the bucket exists and create it if it doesn't
                 BUCKET_EXISTS=$(aws s3api head-bucket --bucket ${BUCKET_NAME} 2>&1 || true)
@@ -65,13 +65,13 @@ jobs:
                 echo "REGION: ${REGION}"
                 echo "TABLE_NAME: ${TABLE_NAME}"
 
-                BUCKET_NAME=${{ env.BUCKET_NAME }}
-                REGION=${{ env.REGION }}
-                TABLE_NAME=${{ env.TABLE_NAME }}
+                # BUCKET_NAME=${{ env.BUCKET_NAME }}
+                # REGION=${{ env.REGION }}
+                # TABLE_NAME=${{ env.TABLE_NAME }}
 
-                echo "BUCKET_NAME: ${BUCKET_NAME}"
-                echo "REGION: ${REGION}"
-                echo "TABLE_NAME: ${TABLE_NAME}"
+                # echo "BUCKET_NAME: ${BUCKET_NAME}"
+                # echo "REGION: ${REGION}"
+                # echo "TABLE_NAME: ${TABLE_NAME}"
                 
                 sed -i "s@<STATE_PATH>@${STATE_PATH}@g" main.tf
                 sed -i "s@<BUCKET_NAME>@${BUCKET_NAME}@g" main.tf
@@ -81,8 +81,8 @@ jobs:
                 terraform plan 
                 terraform apply --auto-approve
 
-              env:
-                BUCKET_NAME: ${{ env.BUCKET_NAME }}
-                REGION: ${{ env.REGION }}
-                TABLE_NAME: ${{ env.TABLE_NAME }}
+            #   env:
+            #     BUCKET_NAME: ${{ env.BUCKET_NAME }}
+            #     REGION: ${{ env.REGION }}
+            #     TABLE_NAME: ${{ env.TABLE_NAME }}
               
