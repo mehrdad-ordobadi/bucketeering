@@ -17,7 +17,7 @@ resource "aws_vpc" "coderunner_vpc" {
  terraform {
   backend "s3" {
     bucket         = "<BUCKET_NAME>"  # Replace with your bucket name
-    region         = "<AWS_REGION>"                  # Replace with your bucket region
+    region         = "<REGION>"                  # Replace with your bucket region
     dynamodb_table = "<TABLE_NAME>"              # Replace with your DynamoDB table name
     key            = "<STATE_PATH>" # Replace with your state file name
     encrypt        = true
