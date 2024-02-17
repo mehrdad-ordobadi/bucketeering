@@ -20,7 +20,7 @@ jobs:
 
             - name: create backend
               run: |
-                BUCKET_NAME=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)_${GITHUB_REF_NAME}
+                BUCKET_NAME=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)-${GITHUB_REF_NAME}
                 if [ ${#BUCKET_NAME_INITIAL} -gt 63 ]; then
                     BUCKET_NAME=${BUCKET_NAME:0:63}
                 fi
