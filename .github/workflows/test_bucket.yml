@@ -25,10 +25,10 @@ jobs:
                 #     BUCKET_NAME=${BUCKET_NAME:0:63}
                 # fi
                 # BUCKET_NAME=${BUCKET_NAME,,}
-                REGION="us-east-1"
-                
-                echo "REGION=${REGION}" >> $GITHUB_ENV
                 # echo "BUCKET_NAME=${BUCKET_NAME}" >> $GITHUB_ENV
+                
+                REGION="us-east-1"
+                echo "REGION=${REGION}" >> $GITHUB_ENV
                 BUCKET_NAME="ephemeral-dev-environment-tfstate-bucket"
                 echo "BUCKET_NAME=${BUCKET_NAME}" >> $GITHUB_ENV
                 
@@ -36,50 +36,31 @@ jobs:
                 echo "TABLE_NAME=${TABLE_NAME}" >> $GITHUB_ENV
                 
                 # check if the bucket exists and create it if it doesn't
-                echo "where are here!"
                 BUCKET_EXISTS=$(aws s3api head-bucket --bucket ${BUCKET_NAME} 2>&1) || BUCKET_EXISTS=""
-                echo "now we are here!"
                 if [ -n "$BUCKET_EXISTS" ]; then
                     echo "Bucket $BUCKET_NAME already exists."
                 else
                     echo "Bucket $BUCKET_NAME does not exist. Creating..."
-                    # aws s3api create-bucket --bucket "$BUCKET_NAME" --region "$REGION"
-                    # aws s3api put-bucket-encryption --bucket "$BUCKET_NAME" --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
-                    # echo "Bucket $BUCKET_NAME created and encryption enabled."
                     
                     cd create-backend
-                    sed -i "s@<BUCKET_NAME>@${BUCKET_NAME}@g" main.tf
-                    sed -i "s@<REGION>@${REGION}@g" main.tf
-                    sed -i "s@<TABLE_NAME>@${TABLE_NAME}@g" main.tf
+                    sed -i "s|<BUCKET_NAME>|${BUCKET_NAME}|g" main.tf
+                    sed -i "s|<REGION>|${REGION}|g" main.tf
+                    sed -i "s|<TABLE_NAME>|${TABLE_NAME}|g" main.tf
                     terraform init
                     terraform plan
                     terraform apply --auto-approve
                 fi
 
-                # # Check if the DynamoDB table exists
-                # TABLE_EXISTS=$(aws dynamodb describe-table --table-name "$TABLE_NAME" --query "Table.TableStatus" --output text 2>/dev/null)
-                # if [ -n "$TABLE_EXISTS" ]; then
-                #     echo "Table $TABLE_NAME already exists."
-                # else
-                #     echo "Table $TABLE_NAME does not exist. Creating..."
-                #     aws dynamodb create-table \
-                #         --table-name "$TABLE_NAME" \
-                #         --attribute-definitions AttributeName=LockID,AttributeType=S \
-                #         --key-schema AttributeName=LockID,KeyType=HASH \
-                #         --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
-                #         --region "$REGION"
-                #     echo "Table $TABLE_NAME created."
-                # fi
             
             - name: terraform plan
               run: |
                 STATE_PATH=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)/$GITHUB_REF_NAME/terraform.tfstate
                 export TF_VAR_environment_name=$GITHUB_REF_NAME
                 BUCKET_NAME="ephemeral-dev-environment-tfstate-bucket"
-                sed -i "s@<STATE_PATH>@${STATE_PATH}@g" main.tf
-                sed -i "s@<BUCKET_NAME>@${BUCKET_NAME}@g" main.tf
-                sed -i "s@<REGION>@${REGION}@g" main.tf
-                sed -i "s@<TABLE_NAME>@${TABLE_NAME}@g" main.tf
+                sed -i "s|<STATE_PATH>|${STATE_PATH}|g" main.tf
+                sed -i "s|<BUCKET_NAME>|${BUCKET_NAME}|g" main.tf
+                sed -i "s|<REGION>|${REGION}|g" main.tf
+                sed -i "s|<TABLE_NAME>|${TABLE_NAME}|g" main.tf
                 
                 terraform init 
                 terraform plan 
