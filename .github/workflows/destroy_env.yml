@@ -29,5 +29,7 @@ jobs:
             sed -i "s@<BUCKET_NAME>@${BUCKET_NAME}@g" main.tf
             sed -i "s@<REGION>@${REGION}@g" main.tf
             sed -i "s@<TABLE_NAME>@${TABLE_NAME}@g" main.tf
-
+            
+            terraform init -reconfigure
+            terraform plan
             terraform destroy --auto-approve
