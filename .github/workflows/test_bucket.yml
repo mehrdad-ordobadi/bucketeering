@@ -32,7 +32,7 @@ jobs:
                 echo "BUCKET_NAME=\"ephemeral-dev-environment-tfstate-bucket\"" >> $GITHUB_ENV
                 
                 TABLE_NAME=${BUCKET_NAME:0:58}_lock
-                echo "TABLE_NAME=${TABLE_NAME}" >> $GITHUB_EN
+                echo "TABLE_NAME=${TABLE_NAME}" >> $GITHUB_ENV
                 
                 # check if the bucket exists and create it if it doesn't
                 BUCKET_EXISTS=$(aws s3api head-bucket --bucket ${BUCKET_NAME} 2>&1 || true)
