@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"  # Replace with your preferred AWS region
+  region = "us-east-1" # Replace with your preferred AWS region
 }
 
 variable "environment_name" {
@@ -9,21 +9,21 @@ variable "environment_name" {
 
 # Create your VPC
 resource "aws_vpc" "coderunner_vpc" {
-  cidr_block =  "10.0.0.0/16" # CIDR block for the VPC
+  cidr_block = "10.0.0.0/16" # CIDR block for the VPC
   tags = {
     Name = "${var.environment_name}" # Name of your VPC
   }
-}   
- terraform {
+}
+terraform {
   backend "s3" {
-    bucket         = "<BUCKET_NAME>"  # Replace with your bucket name
-    region         = "<REGION>"                  # Replace with your bucket region
-    dynamodb_table = "<TABLE_NAME>"              # Replace with your DynamoDB table name
-    key            = "<STATE_PATH>" # Replace with your state file name
+    bucket         = "<BUCKET_NAME>" # Replace with your bucket name
+    region         = "<REGION>"      # Replace with your bucket region
+    dynamodb_table = "<TABLE_NAME>"  # Replace with your DynamoDB table name
+    key            = "<STATE_PATH>"  # Replace with your state file name
     encrypt        = true
   }
-   
- }
+
+}
 
 # # Create a internet gateway
 # resource "aws_internet_gateway" "cr_igw" {
