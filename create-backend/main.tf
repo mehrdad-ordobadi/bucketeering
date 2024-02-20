@@ -2,9 +2,8 @@ provider "aws" {
   region = "<REGION>" # Replace with your region
 }
 
-resource "aws_s3_bucket" "this" {
+resource "aws_s3_bucket" "backend-config" {
   bucket = "<BUCKET_NAME>" # Replace with your bucket name
-  region = "<REGION>"      # Replace with your bucket region
 
   server_side_encryption_configuration {
     rule {
@@ -13,10 +12,14 @@ resource "aws_s3_bucket" "this" {
       }
     }
   }
+}
 
-  lifecycle_rule {
-    id      = "expire-objects"
-    enabled = true
+resource "aws_s3_bucket_lifecycle_configuration" "backend-config" {
+  bucket = aws_s3_bucket.backend-config.id
+
+  rule {
+    id     = "expire-objects"
+    status = "Enabled"
 
     expiration {
       days = 1
@@ -24,7 +27,7 @@ resource "aws_s3_bucket" "this" {
   }
 }
 
-resource "aws_dynamodb_table" "this" {
+resource "aws_dynamodb_table" "backend-config" {
   name           = "<TABLE_NAME>" # Replace with your DynamoDB table name
   billing_mode   = "PROVISIONED"
   read_capacity  = 5
