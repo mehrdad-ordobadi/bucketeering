@@ -36,7 +36,9 @@ jobs:
                 echo "TABLE_NAME=${TABLE_NAME}" >> $GITHUB_ENV
                 
                 # check if the bucket exists and create it if it doesn't
+                echo "where are here!"
                 BUCKET_EXISTS=$(aws s3api head-bucket --bucket ${BUCKET_NAME} 2>&1)
+                echo "now we are here!"
                 if [ -n "$BUCKET_EXISTS" ]; then
                     echo "Bucket $BUCKET_NAME already exists."
                 else
