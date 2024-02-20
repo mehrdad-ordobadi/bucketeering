@@ -36,7 +36,8 @@ jobs:
                 echo "TABLE_NAME=${TABLE_NAME}" >> $GITHUB_ENV
                 
                 # check if the bucket exists and create it if it doesn't
-                if aws s3api head-bucket --bucket ${BUCKET_NAME} 2>&1; then
+                BUCKET_EXISTS=$(aws s3api head-bucket --bucket ${BUCKET_NAME} 2>&1)
+                if [ -n "$BUCKET_EXISTS" ]; then
                     echo "Bucket $BUCKET_NAME already exists."
                 else
                     echo "Bucket $BUCKET_NAME does not exist. Creating..."
@@ -46,7 +47,8 @@ jobs:
                 fi
 
                 # Check if the DynamoDB table exists
-                if aws dynamodb describe-table --table-name "$TABLE_NAME" --query "Table.TableStatus" --output text 2>/dev/null; then
+                TABLE_EXISTS=$(aws dynamodb describe-table --table-name "$TABLE_NAME" --query "Table.TableStatus" --output text 2>/dev/null)
+                if [ -n "$TABLE_EXISTS" ]; then
                     echo "Table $TABLE_NAME already exists."
                 else
                     echo "Table $TABLE_NAME does not exist. Creating..."
