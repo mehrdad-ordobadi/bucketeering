@@ -4,12 +4,14 @@ provider "aws" {
 
 resource "aws_s3_bucket" "backend-config" {
   bucket = "<BUCKET_NAME>" # Replace with your bucket name
+}
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+resource "aws_s3_bucket_server_side_encryption_configuration" "backend-config" {
+  bucket = aws_s3_bucket.backend-config.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
   }
 }
