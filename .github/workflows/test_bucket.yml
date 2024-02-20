@@ -60,12 +60,12 @@ jobs:
             - name: terraform plan
               run: |
                 STATE_PATH=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)/$GITHUB_REF_NAME/terraform.tfstate
-                
+                export TF_VAR_environment_name=$GITHUB_REF_NAME
                 sed -i "s@<STATE_PATH>@${STATE_PATH}@g" main.tf
                 sed -i "s@<BUCKET_NAME>@${BUCKET_NAME}@g" main.tf
                 sed -i "s@<REGION>@${REGION}@g" main.tf
                 sed -i "s@<TABLE_NAME>@${TABLE_NAME}@g" main.tf
-
+                
                 terraform init 
                 terraform plan 
                 terraform apply --auto-approve
