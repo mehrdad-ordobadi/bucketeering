@@ -29,7 +29,8 @@ jobs:
                 
                 echo "REGION=${REGION}" >> $GITHUB_ENV
                 # echo "BUCKET_NAME=${BUCKET_NAME}" >> $GITHUB_ENV
-                echo "BUCKET_NAME=\"ephemeral-dev-environment-tfstate-bucket\"" >> $GITHUB_ENV
+                BUCKET_NAME="ephemeral-dev-environment-tfstate-bucket"
+                echo "BUCKET_NAME=${BUCKET_NAME}" >> $GITHUB_ENV
                 
                 TABLE_NAME=${BUCKET_NAME:0:58}_lock
                 echo "TABLE_NAME=${TABLE_NAME}" >> $GITHUB_ENV
