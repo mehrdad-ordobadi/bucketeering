@@ -3,6 +3,10 @@ name: Destroying Eph. Environ
 on:
     workflow_dispatch:
 
+permissions:
+    id-token: write
+    contents: read
+
 jobs:
     destroy-eph-env:
         runs-on: ubuntu-latest
